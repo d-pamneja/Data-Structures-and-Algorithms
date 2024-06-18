@@ -5,7 +5,7 @@
 using namespace std;
 
 
-
+// Q1. Segregate 0s and 1s (GFG)
 void sort01(int arr[], int n){
       int i = 0;
       int j = n-1;
@@ -24,6 +24,7 @@ void sort01(int arr[], int n){
       }
 }
 
+// Q2. Shift Right by 1 
 void shiftRight(int arr[],int n){
   int temp = arr[n-1];
 
@@ -35,6 +36,7 @@ void shiftRight(int arr[],int n){
   arr[0] = temp;
 }
 
+// Q3. Shift Left by 1
 void shiftLeft(int arr[],int n){
   int temp = arr[0];
 
@@ -45,6 +47,7 @@ void shiftLeft(int arr[],int n){
   arr[n-1] = temp;
 }
 
+// Q4. Shift Right by 2
 void shiftRightby2(int arr[],int n){
   int temp1 = arr[n-2];
   int temp2 = arr[n-1];

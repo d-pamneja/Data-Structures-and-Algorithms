@@ -16,7 +16,6 @@
 #include <limits.h>
 #include <vector>
 #include <limits.h>
-
 using namespace std;
 
 
@@ -29,23 +28,42 @@ void printArray(int arr[], int n)
     }
 }
 
-void MoveNegFirst(int arr[], int n)
-{
-    int j = 0; // Here, j is going to track the first positive i.e. jaha par sabse phele +ve number hai for the trail
-    for (int i = 0; i < n; i++)
-    {
-        if (arr[i] < 0)
-        {
-            swap(arr[i], arr[j]);
-            j++;
+// Q1. Moving All Negative Number to the End of the Array (GFG)
+// void MoveNegFirst(int arr[], int n) // Moving negative to left ka function
+// {
+//     int j = 0; // Here, j is going to track the first positive i.e. jaha par sabse phele +ve number hai for the trail
+//     for (int i = 0; i < n; i++)
+//     {
+//         if (arr[i] < 0)
+//         {
+//             swap(arr[i], arr[j]);
+//             j++;
+//         }
+//     }
+// }
+
+void segregateElements(int arr[],int n){
+    vector<int> v;
+    
+    for(int i=0;i<n;i++){ // First we push all positive elements
+        if(arr[i]>=0){
+            v.push_back(arr[i]);
         }
+    }
+    
+    for(int i=0;i<n;i++){ // First we push all negative elements
+        if(arr[i]<0){
+            v.push_back(arr[i]);
+        }
+    }
+    
+    for(int i=0;i<n;i++){ // Finally, we replace all elements back with original array
+        arr[i] = v[i];
     }
 }
 
-
-// Sort Colors (Leetcode-75) Dutch National Flag Problem
-void sortColors(vector<int> &nums)
-{
+// Q2. Sort Colors (Leetcode-75)  - Dutch National Flag Problem
+void sortColors(vector<int> &nums){
     int i = 0;
     int left = 0; // Position of Last 0 track karne ke liye
     int right = (nums.size() - 1); // Position of last 2's track karne ke liye
@@ -75,7 +93,7 @@ void sortColors(vector<int> &nums)
 }
 
 
-// Rotate Array (Leetcode-189) //Inteview Question
+// Q3. Rotate Array (Leetcode-189) //Inteview Question
 void rotate(vector<int>& nums, int k) {
         //Modulus Method
         vector<int> ans(nums.size());
@@ -98,20 +116,17 @@ void rotate(vector<int>& nums, int k) { // IMP approach for Interview
         // Reverse (k,n-1) -> [5,6,7,1,2,3,4]
 }
 
-// Missing Number (Leetcode-268) //Interview
+// Q4. Missing Number (Leetcode-268) //Interview
 int missingNumber(vector<int>& nums) {
-        // Sum Method
-        int ans = 0;
-        for(int i=0;i<nums.size();i++){
-            ans += nums[i];
-        }
-        int n = nums.size();
+        // // Sum Method
+        // int ans = 0;
+        // for(int i=0;i<nums.size();i++){
+        //     ans += nums[i];
+        // }
+        // int n = nums.size();
         
-        return ((n*(n+1))/2) - ans;
-}
+        // return ((n*(n+1))/2) - ans;
 
-// Missing Number (Leetcode-268) //Interview
-int missingNumber(vector<int>& nums) {
         // XOR Method
         int ans = 0;
         for(int i=0;i<nums.size();i++){
@@ -124,7 +139,7 @@ int missingNumber(vector<int>& nums) {
 }
 
 
-// Row with maximum ones (VVIimp Leetcode-2643)
+// Q5. Row with maximum ones (VVIimp Leetcode-2643)
 vector<int> rowAndMaximumOnes(vector<vector<int > >& mat) {
     vector<int> ans;
     int max_sum = INT_MIN;
@@ -147,7 +162,7 @@ vector<int> rowAndMaximumOnes(vector<vector<int > >& mat) {
     return ans;
 }
 
-// Rotate Image by 90 degree (VVImp Leetcode-48) // Interview Question
+// Q6. Rotate Image by 90 degree (VVImp Leetcode-48) // Interview Question
 void rotate(vector<vector<int > >& matrix) {
         // Transpose karle phele
         int n = matrix.size();
@@ -162,7 +177,7 @@ void rotate(vector<vector<int > >& matrix) {
         }
 }
 
-// Re-arrange array elements (Leetcode-2149)
+// Q7. Re-arrange array elements (Leetcode-2149)
 vector<int> rearrangeArray(vector<int>& nums) {
         int pos = 0;
         int neg = 1;
