@@ -866,3 +866,77 @@ Node * removeDuplicates( Node *head) {
     
     return head;
 }
+
+// Q19. Reverse a Doubly Linked List (GFG)
+class Node2
+{
+public:
+    int data;
+    Node2 *next, *prev;
+    Node2(int val) : data(val), next(NULL), prev(NULL)
+    {
+    }
+};
+
+Node2* reverseDLL(Node2 * head){
+    if(!head || !head->next) return head;
+    
+    Node2* prevNode = head->prev;
+    Node2* currNode = head;
+    Node2* nextNode = head->next;
+    
+    while(nextNode){
+        currNode->next = prevNode;
+        currNode->prev = nextNode;
+        
+        prevNode = currNode;
+        currNode = nextNode;
+        nextNode = nextNode->next;
+    }
+    
+    // Handling last case
+    currNode->next = prevNode;
+    currNode->prev = nextNode;
+    
+    
+    return currNode;
+}
+
+// Q20. Find pairs with given sum in doubly linked list (GFG)
+Node2* getTail(Node2* head){
+    if(!head || !head->next) return head;
+    
+    Node2* looper = head;
+    
+    while(looper->next){
+        looper = looper->next;
+    }
+    
+    return looper;
+}
+
+
+vector<pair<int, int>> findPairsWithGivenSum(Node2 *head, int target){
+    vector<pair<int,int>> ans;
+    Node2* start = head;
+    Node2* end = getTail(head);
+    
+    while(start<end){
+        if(start->data + end->data > target){
+            // Means we move end back
+            end = end->prev;
+        }
+        else if(start->data + end->data < target){
+            // Means we move start ahead
+            start = start->next;
+        }
+        else{
+            // Means answer pair, so store and move both variables
+            ans.push_back({start->data,end->data});
+            start = start->next;
+            end = end->prev;
+        }
+    }
+    
+    return ans;
+}
