@@ -2,6 +2,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+# include <queue>
 
 using namespace std;
 
@@ -838,7 +839,69 @@ Merge Sort Disadvantages:
 */
 
 // Q17. Quick Sort on Singly Linked List (GFG)
+struct node{
+    int data;
+    struct node *next;
+    
+    node(int x){
+        data = x;
+        next = NULL;
+    }
+};
 
+void swapNodes(struct node *l1,struct node *l2){
+    if(l1==NULL || l2==NULL || l1==l2){
+        return;
+    }
+    
+    int holder = l1->data;
+    l1->data = l2->data;
+    l2->data = holder;
+}
+
+struct node* partion(struct node *start,struct node *end){
+    node* pivot = start;
+    node* prev = start;
+    node* curr = start->next; // Looping to check element less than pivot
+    
+    while(curr!=end){
+        if(curr->data < pivot->data){
+            // IMP Point, yaha mein galti karta hoon
+            swapNodes(prev->next,curr);
+            prev = prev->next;
+        }
+        curr = curr->next;
+    }
+    // Now, once the loop is over, swap the starting node with the previous node
+    swapNodes(start,prev);
+    return prev; // In this way, the pivot node will come to the previous node and we will return it
+}
+
+void sorter(struct node *start,struct node *end){
+    if(start==end){
+        return;
+    }
+    
+    else if(start!=end){
+        node* pivotNode = partion(start,end);
+        // Abh, pivot node ke left aur right ko recursively sort kar do
+        sorter(start,pivotNode);
+        sorter(pivotNode->next,end);
+    }
+    
+}
+
+void quickSort(struct node **headRef) {
+    node* head = *headRef;
+    if(!head || !head->next){
+        return;
+    }
+    
+    node* start = head;
+    node* end = NULL;
+    
+    sorter(start,end);
+}
 
 
 // Q18. Remove Duplicates from an Unsorted Linked List (GFG)
@@ -940,3 +1003,202 @@ vector<pair<int, int>> findPairsWithGivenSum(Node2 *head, int target){
     
     return ans;
 }
+
+// Q21. Count triplets in a sorted doubly linked list whose sum is equal to a given value x (Naukri.com)
+ class DLLNode
+{
+    public:
+    int data;
+    DLLNode *next;
+    DLLNode *prev;
+};
+
+DLLNode* getTail(DLLNode* head){
+    if(!head || !head->next) return head;
+    
+    DLLNode* looper = head;
+    
+    while(looper->next){
+        looper = looper->next;
+    }
+    
+    return looper;
+}
+
+int countTriplets(DLLNode* head, int x){
+    int count = 0;
+    DLLNode* looper = head;
+    DLLNode* tail = getTail(head);
+
+    while(looper->next){
+        int currTarget = x - looper->data;
+        
+        DLLNode* start = looper->next;
+        DLLNode* end = tail;
+        
+        while(start->data!=end->data){
+            if(start->data + end->data == currTarget){
+                count++;
+                start = start->next;
+            }
+            else if(start->data + end->data > currTarget){
+                end = end ->prev;
+            }
+            else{
+                start = start->next;
+            }
+        }
+
+        looper = looper->next;
+    }
+
+    return count;
+}  
+
+// Q22. Sort a K-sorted Doubly Linked List (GFG)
+DLLNode *sortAKSortedDLL(DLLNode *head, int k){
+    // Using Min-Heap
+    priority_queue<int,vector<int>,greater<int>> minHeap;
+    DLLNode* looper = head;
+    for(int i=0;i<=k;i++){ // IMP point to minHeap of size k+1, yaha mein galti karta hoon
+        minHeap.push(looper->data);
+        looper = looper->next;
+    }
+    
+    DLLNode *it = head;
+    while(looper){
+        int minimumVal = minHeap.top();
+        minHeap.pop();
+        
+        it->data = minimumVal;
+        minHeap.push(looper->data);
+        
+        it = it->next;
+        looper = looper->next;
+    }
+    
+    while(!minHeap.empty()){
+        int minimumVal = minHeap.top();
+        minHeap.pop();
+        
+        it->data = minimumVal;
+        it = it->next;
+    }
+    
+    return head;
+}
+
+// Q23. Rotate Doubly Linked List by N nodes (Naikri.com)
+DLLNode* getTail(DLLNode* head){
+    if(!head || !head->next) return head;
+    
+    DLLNode* looper = head;
+    
+    while(looper->next){
+        looper = looper->next;
+    }
+    
+    return looper;
+}
+
+DLLNode* findNode(DLLNode* head, int k){
+    if(!head || !head->next) return head;
+    DLLNode* looper = head;
+
+    while(k!=1){
+        looper = looper->next;
+        k--;
+    }
+    return looper;
+}
+
+int getLength(DLLNode* head){
+    if(!head) return 0;
+    DLLNode* looper = head;
+
+    int count = 0;
+    while(looper){
+        count++;
+        looper = looper->next;
+    }
+
+    return count;
+}
+
+DLLNode* rotateDLL(DLLNode* head, int k) {
+    if(!head || !head->next) return head;
+
+    int n = getLength(head);
+    // if(k%n==0) return head;
+
+    DLLNode* currHead = head;
+    DLLNode* currTail = getTail(head);
+    DLLNode* newTail = findNode(head,k);
+    DLLNode* newHead = newTail->next;
+
+    newHead->prev = NULL;
+    newTail->next = NULL;
+    currTail->next = currHead;
+    currHead->prev = currTail;
+
+    return newHead;
+}
+
+// Q24. Reverse a Doubly Linked List in groups of given size (Naukri.com)
+class Node3
+{
+public:
+    int data;
+    Node3 *next;
+    Node3 *prev;
+    Node3(int data)
+    {
+        this->data = data;
+        this->next = NULL;
+        this->prev = NULL;
+    }
+};
+
+Node3* reverseDLLInGroups(Node3* head, int k){	
+    //base case
+    if(head==NULL)
+    return head;
+    
+    Node3* curr=head;
+    Node3* next1=curr->next;
+    Node3* prev1=NULL;
+    Node3* prev2=head->prev;
+    int count=0;
+    
+    while(curr!=NULL && count<k){
+        
+        count++;
+        next1=curr->next;
+        curr->next=curr->prev;
+        curr->prev=next1;
+ 
+        prev1=curr;
+        curr=next1;
+        
+    }
+	// Join this list to the previous reversed list
+    prev1->prev=prev2;
+    //Recursive Call
+    head->next=reverseDLLInGroups(curr,k);
+    
+
+	return prev1;
+}
+
+// Q25. Can we reverse a linked list in less than O(n) time? (GFG)
+/*It is not possible to reverse a simple singly linked list in less than O(n). A simple singly linked list can only be reversed in O(n) time using recursive and iterative methods. 
+You can't reverse a linked list in less than O(N) time because reversing a linked list inherently requires visiting each node in the list at least once. This is because in order to reverse the links, you need to know the order of the nodes.
+
+Here's why:
+
+Traversing the list is necessary: Reversal involves changing the direction of the next pointers in the nodes. To do that, you need to access each node in the list.
+Information access is limited: Unlike arrays, you cannot directly jump to any position in a linked list. You can only traverse the list one node at a time by following the next pointers.
+Therefore, any algorithm that reverses a linked list must iterate through the entire list, resulting in a minimum time complexity of O(N).
+
+A doubly linked list with head and tail pointers while only requiring swapping the head and tail pointers which require lesser operations than a singly linked list can also not be done in less than O(n) since we need to traverse till the end of the list anyway to find the tail node.
+*/
