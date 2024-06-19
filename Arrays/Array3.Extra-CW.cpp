@@ -197,7 +197,7 @@ vector<int> rearrangeArray(vector<int>& nums) {
         return nums;
 }
 
-// Maximum Subarray Sum (Kadane's Algorithm) - V.V.V.V.VIMP (GFG)
+// Q8. Maximum Subarray Sum (Kadane's Algorithm) - V.V.V.V.VIMP (GFG)
 long long maxSubarraySum(int arr[], int n){
     long long maxi = LONG_MIN; // Stores the maximum sum overall
     long long curr_maxi = 0; // Stores the current maximum
@@ -218,12 +218,69 @@ long long maxSubarraySum(int arr[], int n){
     return maxi;
 }
 
+// Q9. Minimise Height II - GFG - IMP
+// Part I: Minimise Height I
+int getMinDiff(int arr[], int n, int k) {
+    // code here
+    sort(arr,arr+n);
+    
+    int diff = arr[n-1] - arr[0];
+    
+    int newMin = INT_MAX;
+    int newMax = INT_MIN;
+    
+    for(int i=1;i<n;i++){
+        // IMP Conditions
+        newMin = min(arr[0]+k,arr[i]-k); // The distance can be minimized by either from adding k from the smallest element or the reducing k from current index, whichever is minimum
+        newMax = max(arr[i-1]+k,arr[n-1]-k); // The distance can be minimized by either from reducing k from the largest element or adding k to the previous towers index, whichever is maximum
+            // In newMax we do arr[i-1] because we are comparing the previous tower with the current tower, and it handles the case where values are not unique. 
+            // If values are unique, then we can do arr[i] instead of arr[i-1]
+            // If values are not unique, then we have to do arr[i-1] because we are comparing the previous tower with the current tower, and if we do arr[i], 
+            // then it will compare the current tower with the current tower itself, which is wrong and will give wrong answer.
+       
+        diff = min(diff,newMax-newMin);
+        
+    }
+    
+    return diff;
+    
+}
+
+// Part II: Minimise Height II
+int getMinDiff2(int arr[], int n, int k) {
+    // code here
+    sort(arr,arr+n);
+    
+    int diff = arr[n-1] - arr[0];
+    
+    int newMin = INT_MAX;
+    int newMax = INT_MIN;
+    
+    for(int i=1;i<n;i++){
+        // IMP Conditions
+        newMin = min(arr[0]+k,arr[i]-k); // The distance can be minimized by either from adding k from the smallest element or the reducing k from current index, whichever is minimum
+        newMax = max(arr[i-1]+k,arr[n-1]-k); // The distance can be minimized by either from reducing k from the largest element or adding k to the previous towers index, whichever is maximum
+            // In newMax we do arr[i-1] because we are comparing the previous tower with the current tower, and it handles the case where values are not unique. 
+            // If values are unique, then we can do arr[i] instead of arr[i-1]
+            // If values are not unique, then we have to do arr[i-1] because we are comparing the previous tower with the current tower, and if we do arr[i], 
+            // then it will compare the current tower with the current tower itself, which is wrong and will give wrong answer.
+        if(newMin<0){ // Skip if minimum difference is greater than 0, since height of tower cannot be less than 0. If -ve allowed, remove this negation
+            continue;
+        }
+        
+        diff = min(diff,newMax-newMin);
+        
+    }
+    
+    return diff;
+    
+}
 
 
 
 int main()
 {
     int arr[] = {-1, 2, -3, -4, 5};
-    MoveNegFirst(arr, 5);
+    // MoveNegFirst(arr, 5);
     printArray(arr, 5);
 }
