@@ -356,3 +356,20 @@ vector<vector<int>> merge(vector<vector<int>>& intervals) {
     // return mergedIntervals;
 }
 
+// Q9. Concatenation of Array (LC-1929)
+vector<int> getConcatenation(vector<int>& nums) {
+    if(nums.size()==0) return {};
+
+    vector<int> ans(2*nums.size());
+
+    for(int i=0;i<nums.size();i++){
+        ans[i] = nums[i];
+    }
+
+    int j = 0;
+    for(int i=nums.size();i<2*nums.size();i++){
+        ans[i] = nums[j++];
+    }
+
+    return ans;
+}
