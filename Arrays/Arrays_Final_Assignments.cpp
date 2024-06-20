@@ -3,6 +3,7 @@
 #include <vector>
 #include <limits.h>
 #include <queue>
+#include <set>
 #include <stack>
 
 using namespace std;
@@ -127,5 +128,231 @@ int findKthLargest(vector<int>& nums, int k) {
 
     // return minHeap.top();
 
+}
+
+// Q4. Intersection of Two Arrays (LC-349)
+vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
+    if(nums1.size()==0 || nums2.size()==0){
+        return {};
+    }
+
+    set<int> st;
+    vector<int> ans;
+
+    sort(nums1.begin(),nums1.end());
+    sort(nums2.begin(),nums2.end());
+
+    int i = 0;
+    int j = 0;
+
+    while(i<nums1.size() && j < nums2.size()){
+        if(nums1[i] == nums2[j]){
+            st.insert(nums1[i]);
+            i++;
+            j++;
+        }
+        else if(nums1[i]<nums2[j]){
+            i++;
+        }
+        else{
+            j++;
+        }
+    }
+
+    for(auto element:st){
+        ans.push_back(element);
+    }
+
+    return ans;
+}
+
+// Q5. Union of Two Arrays (GFG)
+int doUnion(int a[], int n, int b[], int m)  {
+    // // Two Pointer Apporach
+    // sort(a,a+n);
+    // sort(b,b+m);
+    
+    // if(n==0 || m==0) return 0;
+    
+    // int i=0;
+    // int j=0;
+    
+    // vector<int> ans;
+    
+    // while(i<n && j<m){
+    //     if(a[i]==b[j]){
+    //         ans.push_back(a[i++]);
+    //         j++;
+    //     }
+    //     else if(a[i]<b[j]){
+    //         ans.push_back(a[i++]);
+    //     }
+    //     else{
+    //         ans.push_back(b[j++]);
+    //     }
+    // }
+    
+    // while(i<n){
+    //     ans.push_back(a[i++]);
+    // }
+    
+    // while(j<m){
+    //     ans.push_back(b[j++]);
+    // }
+    
+    // return ans.size();
+    
+    
+    // Set Approach
+    if(n==0 || m==0) return 0;
+    
+    set<int> st;
+    int count = 0;
+    
+    for(int i=0;i<n;i++){
+        st.insert(a[i]);
+    }
+    
+    for(int j=0;j<m;j++){
+        st.insert(b[j]);
+    }
+    
+    for(auto element:st){
+        count++;
+    }
+    
+    return count;
+
+}
+
+// Q6. Minimum Jump to Reach End (GFG)
+int minJumps(int arr[], int n){
+    if(n==1){ // IMP Condition, yaha mein galti karta hoon
+        return 0;
+    }
+    
+    if(arr[0]==0){ // IMP Condition, yaha mein galti karta hoon
+        return -1;
+    }
+    
+    int count = 0;
+    int farthest = 0;
+    int current = 0;
+    
+    
+    for(int i=0;i<n-1;i++){
+        farthest = max(farthest,i+arr[i]);
+        if(i==current){ // Agge future point pe current ko rakh do and wait karo
+            count++;
+            current = farthest;
+        }
+        
+        if(current==n-1){ // Imp Condition for further optmisisation
+            break;
+        }
+    }
+    
+    if(current<n-1){ // Agar akhri step tak bhi nahi reach kiye, toh nahi kar paaogay
+        return -1;
+    }
+    
+    return count;
+}
+
+// Q7. Find Duplicate in an Array (LC-287)
+int findDuplicate(vector<int>& nums) {
+    // // Brute Force - Sort and then check for repetition - TC : O(nLogn) SC(1)
+    // sort(nums.begin(),nums.end());
+    // int ans;
+    // for(int i=0;i<nums.size()-1;i++){
+    //     if(nums[i]==nums[i+1]){
+    //         ans = nums[i];
+    //         break;
+    //     }
+    // }
+    // return ans;
+
+    // //Negative Index Marking -> O(n) SC-> O(1)
+    // int ans = -1;
+    // for(int i = 0; i<nums.size();i++){
+    //     int index = abs(nums[i]);
+
+    //     // Check if already visited, then return
+    //     if(nums[index]<0){
+    //         ans = index;
+    //         break;
+    //     }
+    //     nums[index] *= -1;
+    // }
+    // return ans;
+
+    // // Optimised Approach - TC - O(N) SC-O(1)
+    while(nums[0]!=nums[nums[0]]){
+        swap(nums[0],nums[nums[0]]);    
+    }
+
+    return nums[0];
+}
+
+vector<vector<int>> merge(vector<vector<int>>& intervals) {
+    // Array Apporach
+    if(intervals.size()==0){
+        return {{}};
+    }
+    if(intervals.size()==1){
+        return intervals;
+    }
+
+    sort(intervals.begin(),intervals.end());
+
+    vector<vector<int>> mergedIntervals;
+    mergedIntervals.push_back(intervals[0]);
+
+    for(int i=1;i<intervals.size();i++){
+        vector<int> curr = intervals[i];
+        vector<int> &prev = mergedIntervals.back(); // Remember to tak eby reference for updation
+
+        if(curr[0]<=prev[1]){
+            prev[1] = max(prev[1],curr[1]);
+        }
+        else{
+            mergedIntervals.push_back(curr);
+        }
+    }
+
+    return mergedIntervals;
+
+    // Stack Approach
+    // if(intervals.size()==0){
+    //     return {{}};
+    // }
+    // if(intervals.size()==1){
+    //     return intervals;
+    // }
+
+    // sort(intervals.begin(),intervals.end(),myComp);
+
+    // stack<vector<int>> st;
+    // st.push(intervals[0]);
+
+    // for(int i=1;i<intervals.size();i++){
+    //     vector<int> curr = intervals[i];
+    //     vector<int> &prev = st.top(); // By reference to change value if interval merges
+
+    //     if(curr[0]<=prev[1]){
+    //         prev[1] = max(prev[1],curr[1]);
+    //     }
+    //     else{
+    //         st.push(curr);
+    //     }
+    // }
+
+    // vector<vector<int>> mergedIntervals;
+    // while(!st.empty()){
+    //     mergedIntervals.insert(mergedIntervals.begin(),st.top());
+    //     st.pop();
+    // }
+
+    // return mergedIntervals;
 }
 
