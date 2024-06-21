@@ -373,3 +373,42 @@ vector<int> getConcatenation(vector<int>& nums) {
 
     return ans;
 }
+
+// Q10. Next Permutation (LC-31)
+void nextPermutation(vector<int>& nums) {
+    // Brute Force - Using Queue and Map to generate all permutations, and giving (array's index + 1)th as answer. This will take TC -> O(n! * n), that is why it is a useless approach
+
+    // Better Approach - Using STL Function next_permutation. This will also take TC -> O(n! * n)
+    // next_permutation(nums.begin(),nums.end());
+    
+    // Optimal Approach - TC -> O(n), SC -> O(1)
+    // 1. Find the first index where nums[index] < nums[index + 1]. That will be the pivot index
+    // 2. Find the element just bigger than the pivot index, and swap the element with the element at pivot index
+    // 3. Sort the array from (index + 1)th index till the end
+
+    int n = nums.size();
+    if(n<=1) return;
+    int pivotIndex = -1; // Initialsie with -1, as the array could be the largest as well, which means it is the greatest permutation, so return sorted array
+
+    for(int i=n-2;i>=0;i--){
+        if(nums[i]<nums[i+1]){
+            pivotIndex = i;
+            break;
+        }
+    }
+
+    if(pivotIndex == -1){
+        sort(nums.begin(),nums.end());
+        return;
+    }
+
+    for(int i=n-1;i>pivotIndex;i--){
+        if(nums[i]>nums[pivotIndex]){
+            swap(nums[pivotIndex],nums[i]);
+            break;
+        }
+    }
+
+    reverse(nums.begin()+pivotIndex+1,nums.end());
+}
+
