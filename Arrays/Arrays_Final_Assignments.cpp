@@ -415,3 +415,24 @@ void nextPermutation(vector<int>& nums) {
 // Q11. Count Inversions in an Array (GFG)
 
 
+// Q12. Best Time to Buy and Sell Stock (LC-121)
+int maxProfit(vector<int>& prices) {
+    // Optimal
+    int n = prices.size();
+    if(n<2) return 0;
+
+    int maxProfit = 0; // Lowest profit will always be 0
+    int minPrice = prices[0]; // Assuming that first day has the lowest price, IMP Condtion
+
+    for(int i=1;i<n;i++){
+        if(prices[i] > prices[i-1]){ // Matlab on ith day, we can see a stock with some profit, so we add it to maxProfit and maximise it
+            maxProfit = max(maxProfit,prices[i] - minPrice);
+        }
+        else{ // Means we cannot sell today, so we can check if this is the lowest price day and store it to minPrice and minimise it
+            minPrice = min(minPrice,prices[i]);
+        }
+    }
+
+    return maxProfit; 
+}
+
