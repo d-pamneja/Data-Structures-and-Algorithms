@@ -412,5 +412,6 @@ void nextPermutation(vector<int>& nums) {
     reverse(nums.begin()+pivotIndex+1,nums.end());
 }
 
+// Q11. Count Inversions in an Array (GFG)
 
 
