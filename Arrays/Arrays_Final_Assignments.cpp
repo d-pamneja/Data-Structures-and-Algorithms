@@ -436,3 +436,248 @@ int maxProfit(vector<int>& prices) {
     return maxProfit; 
 }
 
+// Q13. Common in Three Sorted Arrays (GFG)
+int remove_duplicate(int a[],int n){ // IMP Condition, yaha mein galti karta hoon iss fucntion mein
+    if (n==0 || n==1)
+        return n;
+    
+    int j = 0; // To store index of next unique element
+    
+    for (int i=0; i < n-1; i++)
+        if (a[i] != a[i+1])
+            a[j++] = a[i]; //Update the first occurence of an element at it's righful place, and skip others
+    
+    a[j++] = a[n-1]; // Store the last element
+        
+    return j;// Return the new size of the array
+}
+
+vector <int> commonElements (int A[], int B[], int C[], int n1, int n2, int n3){
+    if(n1==0 || n2==0 || n3==0) return {};
+    vector<int> ans;
+    
+    n1 = remove_duplicate(A,n1);
+    n2 = remove_duplicate(B,n2);
+    n3 = remove_duplicate(C,n3);
+    
+    int i = 0;
+    int j = 0;
+    int k = 0;
+    
+    while(i<n1 && j<n2 && k<n3){
+        if(A[i]==B[j] && B[j]==C[k]){
+            ans.push_back(A[i++]);
+            j++;
+            k++;
+        }
+        
+        else if(A[i]<B[j]){
+            i++;
+        }
+        
+        else if(B[j]<C[k]){
+            j++;
+        }
+        
+        else{
+            k++;
+        }
+    }
+    
+    
+    return ans;
+}
+
+// Q14. Count Pairs with Given Sum (GFG)
+int getPairsCount(int arr[], int n, int k) {
+    // Brute Force -TC : O(N^2) - TLE
+    // if(n<1) return n==k;
+    // int count = 0;
+    
+    // for(int i=0;i<n-1;i++){
+    //     int target = k - arr[i];
+    //     if(target>0){
+    //         for(int j = i+1;j<n;j++){
+    //             if(arr[j]==target){
+    //                 count++;
+    //             }
+    //         }
+    //     }
+    // }
+    // return count;
+    
+    // // Better Approach : Sorting and Two Pointer : TC : O(NLogN)
+    // sort(arr,arr+n);
+    // int left = 0;
+    // int right = n - 1;
+    // int count = 0;
+    
+    // while(left<right){
+    //     if(arr[left]+arr[right]==k){
+    //         count++;
+    //         int m = left + 1; // To handle duplicates
+    //         while(m<right && arr[m]+arr[right]==k){
+    //             m++;
+    //             count++;
+    //         }
+    //         right--; // Finally when out of the above loop, means arr[m] + arr[right] > k, so move right backwards
+    //     }
+    //     else if(arr[left]+arr[right]<k){
+    //         left++;
+    //     }
+    //     else{
+    //         right--;
+    //     }
+    // }
+    
+    // return count;
+    
+    // Best Approach - Unordered Map - TC : O(N), SC:O(N)
+    int count = 0;
+    unordered_map<int,int> mp; // {element, frequency of element}
+    
+    for(int i=0;i<n;i++){
+        int target = k - arr[i];
+        
+        if(target <0){
+            continue;
+        }
+        
+        if(mp[target]){
+            count += mp[target];
+        }
+        
+        mp[arr[i]]++;
+    }
+    
+    return count;
+}
+
+// Q15. Subarray with 0 Sum (GFG)
+bool subArrayExists(int arr[], int n){
+    // // Brute Force Approach - TC: O(N^2), SC: O(1) - TLE
+    // if(n<1) return false;
+    // int sum=0;
+    // for(int i=0;i<n-1;i++){
+    //     sum=arr[i];
+    //     if(sum==0) return true;
+        
+    //     for(int j=i+1;j<n;j++){
+    //         sum+=arr[j];
+    //         if(sum==0){
+    //             return true;
+    //         }
+    //     }
+    // }
+    // return false;
+    
+    // Optimal Approach - Unordered Map - TC: O(N), SC: O(N)
+    if(n<1) return false;
+    
+    unordered_map<int,bool> mp;
+    int sum = 0;
+    
+    for(int i=0;i<n;i++){
+        sum += arr[i];
+        
+        if(mp[sum] || sum==0){
+            return true;
+        }
+        
+        mp[sum] = true;
+        
+    }
+    
+    return false;
+}
+
+// Q16. Count Occurences More than n/k (GFG)
+int countOccurence(int arr[], int n, int k) {
+    // // Brute Force - Sorting - TC: O(NLogN), SC: O(N)
+    // if(n<1) return 0;
+    // sort(arr,arr+n);
+    // int ans = 0;
+    // int limit = n/k;
+
+    // int count = 1; // count for current element, as voh minimum ek baar toh ayega hi
+    // for(int i=1;i<n;i++){
+    //     if(arr[i]==arr[i-1]){ // Means same element hai, so count++
+    //         count++;
+    //     }
+    //     else{
+    //         if(count > limit){ // Means unique element, so check limit for previous element
+    //             ans++;
+    //         }
+    //         count = 1; // Reset count for next element, IMP CONDITION, yaha mein glati karta hoon
+    //     }
+    // }
+    
+    // // Perform the iteration for the last element
+    // if(count > limit){
+    //     ans++;
+    // }
+    
+    // return ans;
+    
+    // Optimal Approach - Unordered Map - TC : O(N), SC: O(N)
+    if(n<1) return 0;
+    int count = 0;
+    int limit = n/k;
+    
+    unordered_map<int,int> mp; // {element,frequency of that element}
+    for(int i=0;i<n;i++){
+        mp[arr[i]]++;
+    }
+    
+    for(auto element:mp){
+        if(element.second > limit){
+            count++;
+        }
+    }
+    
+    return count;
+}
+
+// Q17. Triplet Sum in Array (GFG)
+ bool find3Numbers(int A[], int n, int X){
+    // // Brute Force - TC : O(N^3), SC : O(1)
+    // if(n<3) return false;
+    
+    // for(int i=0;i<n-2;i++){
+    //     for(int j=i+1;j<n-1;j++){
+    //         int target = X - (A[i] + A[j]);
+    //         for(int k = j+1;k<n;k++){
+    //             if(A[k]==target){
+    //                 return true;
+    //             }
+    //         }
+    //     }
+    // }
+    
+    // return false;
+    
+    // Best Approach - Unordered Map, find pairs of two (K-curr element) makes a number which can be made via pairs
+    // TC - O(N^2), SC : O(N)
+    if(n<3) return false;
+    unordered_map<int,int> mp; // {element, frequency of element}
+    
+    for(int i=0;i<n-2;i++){
+        int target = X - A[i];
+        for(int j=i+1;j<n;j++){
+            int currTarget = target - A[j];
+            
+            if(currTarget <0){
+                continue;
+            }
+            
+            if(mp[currTarget]){
+                return true;
+            }
+            
+            mp[A[j]]++;
+        }
+        mp.clear();
+    }
+    
+    return false;
+}
