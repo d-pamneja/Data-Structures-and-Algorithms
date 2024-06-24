@@ -4,6 +4,7 @@
 #include <limits.h>
 #include <queue>
 #include <set>
+#include <unordered_set>
 #include <stack>
 
 using namespace std;
@@ -680,4 +681,181 @@ int countOccurence(int arr[], int n, int k) {
     }
     
     return false;
+}
+
+// Q18. Find Maximum Product Subarray (LC-152)
+int maxProduct(vector<int>& nums) {
+    // // Brute Force Approach - TC : O(N^2), SC: O(1)
+    // int n = nums.size();
+    // if(n<1) return 0;
+    // if(n==1) return nums[0];
+    // double maxi = INT_MIN;
+
+    // for (int i = 0; i < n; i++) {
+    //     double currProd = 1;
+    //     for (int j = i; j < n; j++) {
+    //         // Calculate product of current subarray
+    //         currProd *= nums[j];
+
+    //         // Update max_product if necessary
+    //         maxi = max(maxi, currProd);
+    //     }
+    // }
+
+    // return (int)maxi;
+
+    // Optimal Approach - Modified Kadane's / Doge's/Chem's Algorithm - TC : O(N), SC : O(1)
+    int n = nums.size();
+    if(n<1) return 0;
+    if(n==1) return nums[0];
+    
+    double maxi = INT_MIN;
+    double currProd = 1;
+    for(int i=0;i<n;i++){ // Left to Right, finding prefix multiplication
+        currProd *= nums[i];
+        maxi = max(maxi,currProd);
+        
+        if(currProd==0){
+            currProd = 1;
+        }
+    }
+    
+    currProd = 1;
+    
+    for(int i=n-1;i>0;i--){ // Right to Left, finding sufix multiplication
+        currProd *= nums[i];
+        maxi = max(maxi,currProd);
+        
+        if(currProd==0){
+            currProd = 1;
+        }
+    }
+    
+    return (int)maxi;
+}
+
+// Q19. Longest Consecutive Subsequence (LC-128)
+bool linearSearchInArray(vector<int> &nums, int x){
+    int N = nums.size();
+    for(int i=0;i<N;i++){
+        if(nums[i]==x){
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+int longestConsecutive(vector<int>& nums) {
+        // // Brute Force - TC : O(N^2), SC : O(1)
+    // if(N<1) return 0;
+    // if(N==1) return 1;
+    
+    // int maxLen = 1;
+    // for(int i=0;i<N;i++){
+    //     int x = arr[i];
+    //     int count = 1;
+    //     while(linearSearchInArray(arr,x+1)){
+    //         count++;
+    //         x++;
+    //     }
+        
+    //     maxLen = max(maxLen,count);
+    // }
+    
+    // return maxLen;
+    // Better Approach - Sorting and Updating - TC : O(NlogN), SC: O(1)
+//   sort(nums.begin(),nums.end());
+//   int N = nums.size();
+//   if(N<1) return 0;
+//   if(N==1) return 1;
+    
+//   int maxi = 1;
+//   int currLen = 1;
+    
+//   for(int i=1;i<N;i++){
+//       if(nums[i] - nums[i-1]==1){
+//           currLen++;
+//           maxi = max(maxi,currLen);
+//       }
+//       else{
+//           if(nums[i]==nums[i-1]){
+//               continue;
+//           }
+//           else{
+//              currLen = 1;
+//           }
+//       }
+//   }
+    
+//   return maxi;
+
+    // Optimal Approach - Using Set and Checking for previous element - TC : O(N), SC : O(N)
+    int N = nums.size();
+    if(N<1) return 0;
+    if(N==1) return 1;
+
+    // Step 1. Push all elements into the set
+    unordered_set<int> st;
+    for(int i=0;i<N;i++){
+    st.insert(nums[i]);
+    }
+
+    // Step 2. For each element, check if it's previous exists in set.
+    // When we reach an element which does not have it's previous, means we have reached the starting point of the consecutive subsequence
+    int maxi = 1;
+
+    for(auto it:st){
+    if(st.find(it-1)==st.end()){ // Matlab iske peeche ka element nahi hai, means this is the start of the subsequence
+        int count = 1;
+        int x = it;
+        while(st.find(x + 1) != st.end()){
+            count++;
+            x++;
+        }
+        maxi = max(maxi,count);
+    }
+    }
+
+    return maxi;
+}
+
+// Q20. Smallest Subarray with Sum Greater than x (GFG)
+int smallestSubWithSum(int arr[], int n, int x){
+    // // Brute Force Approach - TC : O(NlogN), SC : O(1)
+    // if(n==0) return 0;
+    // if(n==1) return arr[0]>x;
+    
+    // int mini = INT_MAX;
+    // int left = 0;
+    // int right = 0;
+    // int currSum = 0;
+    
+    // while(right<n){
+    //     currSum += arr[right++];
+    //     while(currSum>x){
+    //         mini = min(mini,right - left);
+    //         currSum -= arr[left++];
+    //     }
+    // }
+    
+    // return mini == INT_MAX ? 0 : mini;
+    
+    // Optimal Approach - Sliding Windown - TC : O(N), SC : O(1)
+    if(n==0) return 0;
+    if(n==1) return arr[0]>x;
+    
+    int mini = INT_MAX;
+    int left = 0;
+    int currSum = 0;
+    
+    for(int right = 0;right<n;right++){
+        currSum += arr[right];
+        while(currSum>x){
+            mini = min(mini,right - left + 1);
+            currSum -= arr[left++];
+        }
+    }
+    
+    return mini == INT_MAX ? 0 : mini;
 }
