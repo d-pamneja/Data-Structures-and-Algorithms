@@ -1046,3 +1046,138 @@ long long findMinDiff(vector<long long> a, long long n, long long m){
     return diff;
 } 
 
+// Q26. Trap Rain Water (LC-42)
+int trap(vector<int>& height) {
+    // Optimal Approach - Preprocess Array - TC : O(N), SC: O(N)
+    if(height.size()<1) return 0;
+    int totalCapacity = 0;
+
+    // Step 1. Preprocess max element till now from left
+    vector<int> left(height.size());
+    left[0] = height[0];
+    for(int i=1;i<height.size();i++){
+        left[i] = max(height[i],left[i-1]);
+    }
+
+    // Step 2. Preprocess max element till now from right
+    vector<int> right(height.size());
+    right[height.size()-1] = height[height.size()-1];
+    for(int i=height.size()-2;i>=0;i--){
+        right[i] = max(height[i],right[i+1]);
+    }
+
+    // Step 3. Add to total capacity based on formula
+    for(int i=0;i<height.size()-1;i++){
+        totalCapacity += min(left[i],right[i]) - height[i];
+    }
+
+    return totalCapacity;
+}
+
+// Q27 Median of Two Sorted Arrays (LC-4)
+ double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+    if(nums1.size()<1 && nums2.size()<1){
+        return (double)0;
+    }
+
+    // // Brute Force Approach - Merge Both Arrays into one sorted array - TC : O(N+M), SC : O(N+M)
+    // vector<int> arr;
+    // int i = 0;
+    // int j = 0;
+
+    // while(i<nums1.size() && j<nums2.size()){
+    //     if(nums1[i]<=nums2[j]){
+    //         arr.push_back(nums1[i++]);
+    //     }
+    //     else{
+    //         arr.push_back(nums2[j++]);
+    //     }
+    // }
+
+    // while(i<nums1.size()){
+    //     arr.push_back(nums1[i++]);
+    // }
+
+    // while(j<nums2.size()){
+    //     arr.push_back(nums2[j++]);
+    // }
+
+    // int size = arr.size();
+    // if(size&1){
+    //     double ans = arr[(size-1)/2];
+    //     return ans;
+    // }
+    // else{
+    //     int first = (size/2) - 1;
+    //     double ans = (arr[first] + arr[first + 1])/(double)2;
+    //     return ans;
+    // }
+
+    // Optimal Approach - Binary Search Method + Partition - TC : O(log(min(N,M))), SC : O(1)
+    // IMP QUES, DRY RUN MULTIPLE TIMES
+    int n1 = nums1.size();
+    int n2 = nums2.size();
+
+    int n = n1 + n2;
+
+    if(n1 > n2){
+        return findMedianSortedArrays(nums2,nums1);
+    }
+
+    // Step 1. Create a search space (this is for the number of elements we will take from the first array). Here, n1 < n2, so we take n1 as end point to reduce computation complexity.
+    int low = 0;
+    int high = n1;
+
+    int left = (n1 + n2 + 1)/2; 
+
+    while(low<=high){
+        int mid1 = ((high - low)/2) + low;
+        int mid2 = left - mid1;
+
+        // Setting l1,l2,r1,r2
+
+        int l1 = INT_MIN;
+        int l2 = INT_MIN;
+
+        int r1 = INT_MAX;
+        int r2 = INT_MAX;
+
+        if(mid1<n1){
+            r1 = nums1[mid1];
+        }
+
+        if(mid2<n2){
+            r2 = nums2[mid2];
+        }
+
+        if(mid1 - 1 >=0){
+            l1 = nums1[mid1-1];
+        }
+
+        if(mid2 - 1 >=0){
+            l2 = nums2[mid2-1];
+        }
+
+        // Comparision
+        if(l1<=r2 && l2<=r1){
+            if(n%2==1){ // Odd Case
+                return max(l1,l2);
+            }
+            else{
+                double ans = (double)(max(l1,l2) + min(r1,r2))/2.0;
+                return ans;
+            }
+        }
+
+        else if(l1 > r2){
+            high = mid1 - 1;
+        }
+        else{
+            low = mid1 + 1;
+        }
+
+    }
+
+    return double(0);
+}
+
