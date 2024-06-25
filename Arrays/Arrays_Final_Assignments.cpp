@@ -859,3 +859,167 @@ int smallestSubWithSum(int arr[], int n, int x){
     
     return mini == INT_MAX ? 0 : mini;
 }
+
+// Q21. Array Subset of another array (GFG)
+string isSubset(int a1[], int a2[], int n, int m) {
+    // // Better Approach - TC : O(NlogN + MlogM), SC : O(1)
+    // if(n < 1 || m < 1) return "No";
+    // sort(a1,a1+n);
+    // sort(a2,a2+m);
+
+    // int i = 0;
+    // int j = 0;
+
+    // while(i<n && j<m){
+    //     if(a1[i]==a2[j]){
+    //         j++;
+    //     }
+    //     i++;
+    // }
+
+    // if(j==m){ // Means reached end of sub array, matlab all elements present
+    //     return "Yes";
+    // }
+    // else{
+    //     return "No";
+    // }
+
+    // Optimal Approach - TC : O(max(N,M)), SC : O(N)
+    if(n < 1 || m < 1) return "No";
+    unordered_map<int,int> mp; // {element, frequency of element}
+
+    for(int i=0;i<n;i++){
+        mp[a1[i]]++;
+    }
+
+    for(int i=0;i<m;i++){
+        if(mp.find(a2[i])!=mp.end()){
+            if(mp[a2[i]]>0){
+                mp[a2[i]]--;
+            }
+            else{
+                return "No";
+            }
+        }
+        else{
+            return "No";
+        }
+    }
+
+    return "Yes";
+}
+
+// Q22. Factorial of Large Numbers (GFG)
+vector<int> factorial(int N){
+    // Optimal Approach - TC : O(N^2), SC: O(N)
+    if(N<1) return {0};
+    if(N==1) return {1};
+    
+    vector<int> ans;
+    ans.push_back(1); // Initilaise answer with N=1, and build the factorial from 2->n
+    int carry = 0;
+    
+    for(int i = 2;i<=N;i++){
+        for(int j = 0;j<ans.size();j++){
+            int x = (ans[j]*i) + carry;
+            ans[j] = x%10;
+            carry = x/10;
+        }
+        
+        while(carry){ // IMP CONDITION, yaha mein galti karta hoon
+            ans.push_back(carry%10);
+            carry /= 10;
+        }
+    }
+    
+    reverse(ans.begin(),ans.end());
+    return ans;
+}
+
+// Q23. Palindrome Array (GFG)
+bool isPalindrome(int x){
+    string str = to_string(x);
+    
+    int i = 0;
+    int j = str.size() - 1;
+    
+    while(i<j){
+        if(str[i]!=str[j]){
+            return false;
+        }
+        i++;
+        j--;
+    }
+    
+    return true;
+}
+
+int PalinArray(int a[], int n){
+    if(n<1) return 0;
+    
+    for(int i=0;i<n;i++){
+        if(!isPalindrome(a[i])){
+            return 0;
+        }
+    }
+    
+    return 1;
+}
+
+// Q24. Three way partitioning (GFG)
+void threeWayPartition(vector<int>& array,int a, int b){
+    // // Brute Force - TC : O(N), SC: O(N)
+    // if(array.size()<1) return;
+    
+    // vector<int> arr1;
+    // vector<int> arr2;
+    // vector<int> arr3;
+    
+    // for(int i=0;i<array.size();i++){
+    //     if(array[i]<a){
+    //         arr1.push_back(array[i]);
+    //     }
+    //     else if(array[i]>=a && array[i]<=b){
+    //         arr2.push_back(array[i]);
+    //     }
+    //     else if(array[i]>b){
+    //         arr3.push_back(array[i]);
+    //     }
+    // }
+    
+    // vector<int> ans;
+    
+    // for(int i=0;i<arr1.size();i++){
+    //     ans.push_back(arr1[i]);
+    // }
+    
+    // for(int i=0;i<arr2.size();i++){
+    //     ans.push_back(arr2[i]);
+    // }
+    
+    // for(int i=0;i<arr3.size();i++){
+    //     ans.push_back(arr3[i]);
+    // }
+    
+    // array = ans;
+
+    // Optimal Approach - Swapping - TC: O(N), SC: O(1)
+    if(array.size()<1) return;
+    int last = 0;
+    
+    for(int i=0;i<array.size();i++){
+        if(array[i]<a){
+            swap(array[i],array[last]);
+            last++;
+        }
+    }
+    
+    for(int i=0;i<array.size();i++){
+        if(array[i]>=a && array[i]<=b){
+            swap(array[i],array[last]);
+            last++;
+        }
+    }
+    
+    return;
+}
