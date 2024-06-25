@@ -1023,3 +1023,26 @@ void threeWayPartition(vector<int>& array,int a, int b){
     
     return;
 }
+
+// Q25. Chocolate Distribution Problem (GFG)
+long long findMinDiff(vector<long long> a, long long n, long long m){
+    // Optimal Approach - Sliding Window - TC : O(NlogN), SC : O(1)
+    if(n<1 || m<1 || n<m) return 0;
+
+    sort(a.begin(),a.end());
+
+    long long mini = a[0];
+    long long maxi = a[m-1]; 
+    long long diff = maxi - mini;
+    
+    int j = 0;
+    for(long long i=m;i<n;i++){
+        mini = a[++j];
+        maxi = a[i];
+        
+        diff = min(diff,maxi-mini);
+    }
+    
+    return diff;
+} 
+
