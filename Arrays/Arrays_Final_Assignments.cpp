@@ -1181,3 +1181,172 @@ int trap(vector<int>& height) {
     return double(0);
 }
 
+// Q28. Set Matrix Zeroes (LC-73)
+void setZeroes(vector<vector<int>>& matrix) {
+    if(matrix.size()<1) return;
+    int m = matrix.size();
+    int n = matrix[0].size();
+    // // Brute Force - Using Another Matrix - TC : O((N+M)*(N*M)), SC : O(N*M)
+    // vector<vector<int>> visited = matrix;
+
+    // for(int i=0;i<m;i++){
+    //     for(int j=0;j<n;j++){
+    //         if(matrix[i][j]==0){
+
+    //             for(int k =0;k<n;k++){
+    //                 visited[i][k] = 0;
+    //             }
+
+    //             for(int k =0;k<m;k++){
+    //                 visited[k][j] = 0;
+    //             }
+    //         }
+    //     }
+    // }
+
+    // matrix = visited;
+    // return;
+
+    // Better Approach - Iterating using Two Nested Loops and Stack - TC : O(M*N), SC : O(min(M,N)) [As in worst case, stack will either have all rows or all cols]
+
+    // // First, store all indices where there is a 0
+    // stack<pair<int,int>> st;
+    // for(int i=0;i<m;i++){
+    //     bool flag = false;
+    //     int row = -1;
+    //     int col = -1;
+
+    //     for(int j=0;j<n;j++){
+    //         if(matrix[i][j]==0){
+    //             flag = true;
+    //             row = i;
+    //             col = j;
+    //             st.push({row,col});
+    //         }
+    //     }
+
+    // }
+
+    // while(!st.empty()){
+    //     auto top = st.top();
+    //     st.pop();
+
+    //     int row = top.first;
+    //     int col = top.second;
+
+    //     for(int i=0;i<n;i++){
+    //         matrix[row][i] = 0;
+    //     }
+
+    //     for(int j=0;j<m;j++){
+    //         matrix[j][col] = 0;
+    //     }
+    // }
+
+    // return;
+
+    // Optimal Approach - Using two variables and updating in constant space - TC: O(M*N), SC: O(1)
+
+    bool isRow0 = false;
+    bool isCol0 = false;
+
+    // Step 1. Agar 0th row and col mein koi bhi 0 hai, set variable as true
+    for(int i=0;i<m;i++){
+        if(matrix[i][0]==0){
+            isCol0 = true;
+        }
+    }
+
+    for(int j=0;j<n;j++){
+        if(matrix[0][j]==0){
+            isRow0 = true;
+        }
+    }
+
+    // Step 2: If we now see any 0, we will make the corresponding row no. and column no. equal to 0 in the 0th column and 0th row respectively
+    for(int i=1;i<m;i++){
+        for(int j=1;j<n;j++){
+            if(matrix[i][j]==0){
+                matrix[i][0]=0;
+                matrix[0][j]=0;
+            }
+        }
+    }
+
+    // Step 3: Now we will update the values of the matrix except first row and first column to 0 if matrix[i][0]=0 or matrix[0][j]=0 for any (i,j).
+    for(int i=1;i<m;i++){
+        for(int j=1;j<n;j++){
+            if(matrix[0][j]==0 || matrix[i][0]==0)
+                matrix[i][j]=0;
+        }
+    }
+    
+    // Step 4: finally we will traverse the 0th row and 0th column and if we find any 0, we will make the whole row and whole column equal to 0
+    if(isRow0){
+        for(int j=0;j<n;j++)
+            matrix[0][j]=0;
+    }
+    
+    if(isCol0){
+        for(int i=0;i<m;i++)
+            matrix[i][0]=0;
+    }
+
+    return;
+}
+
+// Q29. Subarray Sum Equals K (LC-560)
+int subarraySum(vector<int>& nums, int k) {
+    if(nums.size()<1) return 0;
+    if(nums.size()==1) return nums[0]==k;
+    int count = 0;
+
+    // // Brute Force - Make all subarrays and if matches with target, store - TC : O(N^2), SC : O(1)
+    // for(int i = 0; i < nums.size(); i++){
+    //     int sum = nums[i];
+        
+    //     if(sum == k){
+    //         count++;
+    //     }
+        
+    //     for(int j = i + 1; j < nums.size(); j++){
+    //         sum += nums[j]; 
+            
+    //         if(sum == k){
+    //             count++;
+    //         }
+    //     }
+    // }
+
+    // return count;
+
+    // Optimal Apporach - Using Map and Logic - TC : O(N), SC : O(N)
+    // Here, we cannot use two pointers
+    vector<int> prefix(nums.size());
+    int sum = 0;
+
+    // Step 1: Create prefix sum array
+    for(int i=0;i<nums.size();i++){
+        sum += nums[i];
+        prefix[i] = sum;
+    }
+
+    // Step 2: In map, traverse and check if there exists prefix[i] - k, means count increases by the frequency with which (prefix[i] - k) exists
+    unordered_map<int,int> mp; //{element,frequency}
+    for(int i=0;i<nums.size();i++){
+
+        if(prefix[i]==k){
+            count++;
+        }
+
+        if(mp.find(prefix[i]-k)!=mp.end()){ // Matlab current index and starting ke beech mein sum k hua hai, so add kar do kinti baar sum k hua hai
+            count += mp[prefix[i]-k];
+        }
+
+        mp[prefix[i]]++;
+    }
+
+    return count;
+} 
+
+// Q30. 
