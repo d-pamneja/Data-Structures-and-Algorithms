@@ -1349,4 +1349,350 @@ int subarraySum(vector<int>& nums, int k) {
     return count;
 } 
 
-// Q30. 
+// Q30. Leaders in an Array (GFG)
+vector<int> leaders(int n, int arr[]) {
+    // Optimal - TC : O(N), SC : O(N)
+    
+    if(n<1) return {};
+    if(n==1) return {arr[0]};
+    int maxi = arr[n-1];
+    vector<int> ans;
+    
+    for(int i=n-1;i>=0;i--){
+        if(arr[i]>=maxi){
+            maxi = arr[i];
+            ans.push_back(maxi);
+        }
+    }
+    
+    reverse(ans.begin(),ans.end());
+    return ans;
+}
+
+// Q31. Pascal Triangle (LC-118)
+vector<vector<int>> generate(int numRows) {
+    // Brute Force - Using Recursion - TC : O(2^N), SC : O(2^N)
+    if(numRows==0) return {};
+    if(numRows==1) return {{1}};
+
+    // Recursive Call
+    vector<vector<int>> prevRows = generate(numRows - 1);
+    vector<int> newRow(numRows,1);
+
+    for(int i=1;i<numRows - 1;i++){
+        newRow[i] = prevRows.back()[i-1] + prevRows.back()[i];
+    }
+
+    // Updated row in final answer
+    prevRows.push_back(newRow);
+    return prevRows;
+}
+
+// Q32. Missing and Repeating Number (GFG)
+vector<int> findTwoElement(vector<int> arr, int n) {
+    // Bruteforce - TC : O(N), SC : O(1)
+    if(n<1) return {};
+    
+    vector<int> ans;
+    
+    // Step 1. Sort Array to make sure it each arr[i] is correctly placed at i-1. Basically, if arr[i] = 1, it's correct position is 0 (i-1)th index
+    int i = 0;
+    while(i<n){
+        int index = arr[i] - 1;
+        if(arr[i]!=arr[index]){ // If element not in correct position, send it to it's position. however, do not move i as incoming element may also need to swap places to reach it's ideal position
+            swap(arr[i],arr[index]);
+        }
+        else{
+            i++;
+        }
+    }
+    
+    // Step 2. For any element which is not in it's correct place, is the one which is repeating, and (i+1) is the value of the missing element
+    for(int k=0;k<n;k++){
+        if(arr[k]!=(k+1)){
+            ans.push_back(arr[k]);
+            ans.push_back(k+1);
+            break;
+        }
+    }
+    
+    return ans;
+}
+
+// Q33. Merge Sorted Array (LC-88)
+void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+    if(n<1) return;
+
+    // // Brute Force : TC : O(m+n * (logM + logN)), SC : O(1)
+    //int i = m;
+    // for (int j = 0; j<n; j++){
+    //     nums1[i] = nums2[j];
+    //     i++;
+    // }
+    // sort(nums1.begin(),nums1.end());
+    // return;
+
+    // Optimal Approach - TC : O(m+n), SC : O(1)
+    int i = m - 1;
+    int j = n - 1;
+    int k = m + n - 1;
+    
+    while (j >= 0) {
+        if (i >= 0 && nums1[i] > nums2[j]) {
+            nums1[k--] = nums1[i--];
+        } else {
+            nums1[k--] = nums2[j--];
+        }
+    }
+
+    return;
+}
+
+// Q34. Majority Element I - (LC-189)
+int majorityElement(vector<int>& nums) {
+    // // Brute Force : Using Two Nested Loop - TC : O(N^2), SC - O(1)
+    // int ans;
+    // int limit = nums.size()/2;
+
+    // for(int i=0;i<nums.size();i++){
+    //     if(ans.size()==0 || ans[0]!=nums[i]){
+    //         int count = 0;
+    //         for(int j=0;j<nums.size();j++){
+    //             if(nums[j]==nums[i]){
+    //                 count++;
+    //             }
+    //         }
+
+    //         if(count>limit){
+    //             ans = nums[i];
+    //         }
+    //     }
+    // }
+
+    // return ans;
+
+    // Better Approach : Using Map and Set - TC : O(N), SC : O(N)
+    // int ans;
+    // unordered_map<int,int> hash;
+
+    // for(int i=0;i<nums.size();i++){
+    //     hash[nums[i]]++;
+    // }
+
+    // int limit = nums.size()/2;
+    // for(int i=0;i<nums.size();i++){
+    //     if(hash[nums[i]]>limit){
+    //         ans = nums[i];
+    //         break;
+    //     }
+    // }
+
+    // return ans;
+
+    // Optimal Approach - Moore's Voting Algo - IMP - TC : O(N), SC : O(1)
+    int ans;
+    int element;
+    int count = 0;
+
+    for(int i=0;i<nums.size();i++){
+        if(count==0){ // In case count is 0, means the array before this point is invaild and we can remove it and start from current position
+            element = nums[i];
+            count++;
+        }
+
+        // Now, we need to traverse the array to cancel out lengths in which the majority element does not exist. 
+        else if(nums[i]==element){ // Means if we keep on encountering the current element, we add the count
+            count++;
+        }
+        else{ // Means new element, hence we subtract the count
+            count--;
+        }
+    }
+
+    return element;
+}
+// Q35. Majority Element II - (LC-229)
+vector<int> majorityElementII(vector<int>& nums) {
+    // // Brute Force : Using Two Nested Loop - TC : O(N^2), SC - O(1)
+    // vector<int> ans;
+    // int limit = nums.size()/3;
+
+    // for(int i=0;i<nums.size();i++){
+    //     if(ans.size()==0 || ans[0]!=nums[i]){
+    //         int count = 0;
+    //         for(int j=0;j<nums.size();j++){
+    //             if(nums[j]==nums[i]){
+    //                 count++;
+    //             }
+    //         }
+
+    //         if(count>limit){
+    //             ans.push_back(nums[i]);
+    //         }
+    //     }
+
+    //     if(ans.size()==2){
+    //         break;
+    //     }
+    // }
+
+    // return ans;
+
+    // // Better Approach : Using Map and Set - TC : O(N), SC : O(N)
+    // set<int> st;
+    // vector<int> ans;
+    // unordered_map<int,int> hash;
+
+    // for(int i=0;i<nums.size();i++){
+    //     hash[nums[i]]++;
+    // }
+
+    // int limit = nums.size()/3;
+    // for(int i=0;i<nums.size();i++){
+    //     if(hash[nums[i]]>limit){
+    //         st.insert(nums[i]);
+    //     }
+    // }
+
+    // ans.assign(st.begin(),st.end());
+    // return ans;
+
+    // Optimal Approach - Moore's Voting Algo - IMP - TC : O(N), SC : O(1)
+    vector<int> ans;
+    int element1 = INT_MIN;
+    int count1 = 0;
+
+    int element2 = INT_MIN;
+    int count2 = 0;
+
+    for(int i=0;i<nums.size();i++){
+        if(count1==0 && nums[i]!=element2){ // In case count is 0, means the array before this point is invaild and we can remove it and start from current position
+            element1 = nums[i];
+            count1++;
+        }
+
+        else if(count2==0 && nums[i]!=element1){ // In case count is 0, means the array before this point is invaild and we can remove it and start from current position
+            element2 = nums[i];
+            count2++;
+        }
+
+        // Now, we need to traverse the array to cancel out lengths in which the majority element does not exist. 
+        else if(nums[i]==element1){ // Means if we keep on encountering the current element, we add the count
+            count1++;
+        }
+        else if(nums[i]==element2){ // Means if we keep on encountering the current element, we add the count
+            count2++;
+        }
+        else{ // Means new element, hence we subtract the count
+            count1--;
+            count2--;
+        }
+    }
+
+    // Step2: Check with counters if they are more than n/3
+    int limit = (int)nums.size()/3;
+    int maxCount1 = 0;
+    int maxCount2 = 0;
+
+    for(int i=0;i<nums.size();i++){
+        if(nums[i]==element1){
+            maxCount1++;
+        }
+        else if(nums[i]==element2){
+            maxCount2++;
+        }
+    }
+
+    if(maxCount1 > limit){
+        ans.push_back(element1);
+    }
+    if(maxCount2 > limit){
+        ans.push_back(element2);
+    }
+
+    return ans;
+}
+
+// Q36. 3 Sum (LC-15)
+vector<vector<int>> threeSum(vector<int>& nums) {
+    int n = nums.size();
+    if(n<3) return {};
+    // // Brute Force  - Three Nested Loop and Set - TC : O(N^3), SC : O(Number of Triplets)
+    // set<vector<int>> st;
+
+    // for(int i=0;i<n;i++){
+    //     for(int j=i+1;j<n;j++){
+    //         for(int k=j+1;k<n;k++){
+    //             if(nums[i] + nums[j] + nums[k] == 0){
+    //                 vector<int> temp = {nums[i],nums[j],nums[k]};
+    //                 sort(temp.begin(),temp.end());
+    //                 st.insert(temp);
+    //             }
+    //         }
+    //     }
+    // }
+
+
+    // vector<vector<int>> ans(st.begin(),st.end());
+    // return ans;
+
+    // Better Approach - Two Nested Loop and Hashing Set and Set - TC : O(N^2) * O(M), SC: O(N) + O(Number of Triplets) [Here, M is any variable < N]
+    // set<vector<int>> st;
+
+    // for(int i=0;i<n;i++){
+    //     set<int> hashSet;
+    //     for(int j=i+1;j<n;j++){
+    //         int third = - (nums[i] + nums[j]);
+    //         if(hashSet.find(third) != hashSet.end()){
+    //             // If we find this, means triplet exists
+    //             vector<int> temp = {nums[i],nums[j],third};
+    //             sort(temp.begin(),temp.end());
+    //             st.insert(temp);
+    //         }
+    //         // Finally, we insert this into the hash set of current triplet finding process at ith index
+    //         hashSet.insert(nums[j]);
+    //     }
+    //     hashSet.clear();
+    // }
+
+    // vector<vector<int>> ans(st.begin(),st.end());
+    // return ans;
+
+    // Optimal Apporach - Sorting the Array and using Two Pointers - TC : O(N^2) + O(NlogN), SC : O(Number of Triplets)
+    vector<vector<int>> ans;
+    sort(nums.begin(),nums.end());
+    for(int i=0;i<n;i++){
+        if(i>0 && nums[i]==nums[i-1]){
+            continue;
+        }
+
+        int j = i+1;
+        int k = n - 1;
+
+        while(j<k){
+            if(nums[i] + nums[j] + nums[k] < 0){
+                j++;
+            }
+            else if(nums[i] + nums[j] + nums[k] > 0){
+                k--;
+            }
+            else{
+                vector<int> temp = {nums[i],nums[j],nums[k]};
+                ans.push_back(temp);
+                j++;
+                k--;
+
+                while(j<k && nums[j]==nums[j-1]){
+                    j++;
+                }
+
+                
+                while(j<k && nums[k]==nums[k+1]){
+                    k--;
+                }
+            }
+        }
+    }
+
+    return ans;
+}
