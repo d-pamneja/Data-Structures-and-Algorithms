@@ -1696,3 +1696,273 @@ vector<vector<int>> threeSum(vector<int>& nums) {
 
     return ans;
 }
+
+// Q37. FourSum (LC-18)
+vector<vector<int>> fourSum(vector<int>& nums, int target) {
+    int n = nums.size();
+    if(n<4) return {};
+    // // // Brute Force  - Three Nested Loop and Set - TC : O(N^4), SC : O(Number of Quadruplets)
+    // set<vector<int>> st;
+
+    // for(int i=0;i<n;i++){
+    //     for(int j=i+1;j<n;j++){
+    //         for(int k=j+1;k<n;k++){
+    //             for(int l=k+1;l<n;l++){
+    //                 if((long long)nums[i] + (long long)nums[j] + (long long)nums[k] + (long long)nums[l] == (long long)target){
+    //                     vector<int> temp = {nums[i],nums[j],nums[k],nums[l]};
+    //                     sort(temp.begin(),temp.end());
+    //                     st.insert(temp);
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+
+    // vector<vector<int>> ans(st.begin(),st.end());
+    // return ans;
+
+    // // Better Approach - Three Nested Loop and Hashing Set and Set - TC : O(N^3) * O(M), SC: O(N) + O(Number of Quadruplets) [Here, M is any variable < N]
+    // set<vector<int>> st;
+
+    // for(int i=0;i<n;i++){
+    //     for(int j=i+1;j<n;j++){
+    //         set<long long> HashSet;
+    //         for(int k=j+1;k<n;k++){
+    //             long long fourth = (long long)target - ((long long)nums[i] + (long long)nums[j] + (long long)nums[k]);
+    //             if(HashSet.find(fourth) != HashSet.end()){
+    //                 // If we find this, means quadruplet exists
+    //                 vector<int> temp = {nums[i],nums[j],nums[k],(int)fourth};
+    //                 sort(temp.begin(),temp.end());
+    //                 st.insert(temp);
+    //             }
+    //             // Finally, we insert this into the hash set of current triplet finding process at ith index
+    //             HashSet.insert(nums[k]);
+    //         }
+    //         HashSet.clear();
+    //     }
+    // }
+
+    // vector<vector<int>> ans(st.begin(),st.end());
+    // return ans;
+
+    // Optimal Apporach - Sorting the Array and using Two Pointers + Two Loops - TC : O(N^3) + O(NlogN), SC : O(Number of Triplets)
+    vector<vector<int>> ans;
+    sort(nums.begin(),nums.end());
+    for(int i=0;i<n;i++){
+        if(i>0 && nums[i]==nums[i-1]){ // IMP CONDITION, yaha mein galti karta hoon
+            continue;
+        }
+
+        for(int j=i+1;j<n;j++){
+            if(j!=(i+1) && nums[j]==nums[j-1]){ // IMP CONDITION, yaha mein galti karta hoon
+                continue;
+            }
+
+            int k = j + 1;
+            int l = n - 1;
+
+            while(k<l){
+                long long sum = (long long)nums[i] + (long long)nums[j] + (long long)nums[k] + (long long)nums[l];
+                if(sum < target){
+                    k++;
+                }
+                else if(sum > target){
+                    l--;
+                }
+                else{
+                    vector<int> temp = {nums[i],nums[j],nums[k],nums[l]};
+                    ans.push_back(temp);
+                    k++;
+                    l--;
+
+                    while(k<l && nums[k]==nums[k-1]){ // IMP CONDITION, yaha mein galti karta hoon
+                        k++;
+                    }
+
+                    while(k<l && nums[l]==nums[l+1]){ // IMP CONDITION, yaha mein galti karta hoon
+                        l--;
+                    }
+                }
+            }
+        }
+    }
+
+    return ans;
+}
+
+// Q38. Check if Array is sorted and Rotated (LC-1752)
+bool check(vector<int>& nums) {
+    int n = nums.size();
+    if(n<1) return false;
+
+    // Think of the entire array as a cyclic array i.e. the position after (n-1)th index will be 0th index again
+    // So now, if the array is sorted or sorted and rotated, there should exist only one pair such that nums[i-1] > nums[i] (the last index from the first index)
+
+    int count = 0;
+    for(int i=1;i<n;i++){
+        if(nums[i-1]>nums[i]){
+            count++;
+        }
+    }
+
+    // Special check for last index
+    if(nums[n-1]>nums[0]){
+        count++;
+    }
+
+
+    return count<=1;
+}
+
+// Q39. Subarray with given XOR (InterviewBit)
+int solve(vector<int> &A, int B) {
+    int n = A.size();
+    int count = 0;
+    // Brute Force - Find all Subarrays and then check if their XOR is target. TC : O(N^3), SC : O(1)
+    // for(int i=0;i<n;i++){
+    //     for(int j=i;j<n;j++){
+    //         int XOR = 0;
+    //         for(int k=i;k<j+1;k++){
+    //             XOR = XOR ^ A[k];
+    //         }
+            
+    //         if(XOR==B){
+    //             count++;
+    //         }
+    //     }
+    // }
+    
+    // return count;
+    
+    // Better Approach - TC : O(N^2), SC : O(1)
+    for(int i=0;i<n;i++){
+        int XOR = 0;
+        for(int j=i;j<n;j++){
+            XOR = XOR ^ A[j];
+            
+            if(XOR==B){
+                count++;
+            }
+        }
+    }
+    
+    return count;
+    
+    // Optimal Solution
+    // We will find prefix XOR array and then check if XOR of any two prefix XORs is equal to B
+    // Matlab, array ka XOR nikal ke usme se kuch XOR nikal ke B mil jaata hai toh, uska XOR bhi B hoga. Isse hume pata chalega ki koi bhi subarray ka XOR B hai
+    // Optimal Solution
+    // We will find prefix XOR array and then check if XOR of any two prefix XORs is equal to B
+    // Matlab, array ka XOR nikal ke usme se kuch XOR nikal ke B mil jaata hai toh, uska XOR bhi B hoga. Isse hume pata chalega ki koi bhi subarray ka XOR B hai
+    
+    // We will use hashing to check occurence 
+    int XOR = 0;
+    unordered_map<int,int> mp; // {element,count of element}
+    
+    mp[XOR]++;
+    
+    for(int i=0;i<n;i++){
+        XOR = XOR ^ A[i];
+        int x = XOR ^ B;
+        count += mp[x];
+        
+        // Finally, put it current XOR into the map - IMP CONDITION - YAHA MEIN GALTI KARTA HOON
+        mp[XOR]++;
+    }
+    
+    return count;   
+    
+}
+
+// Q40. Maximum Subarray Sum (GFG)
+// long long findSmallestinArray(long long arr[],long long i,long long j){
+//     priority_queue<int,vector<int>,greater<int>> minHeap;
+//     for(int k = i;k<j+1;k++){
+//         minHeap.push(arr[k]);
+//     }
+    
+//     return minHeap.top();
+// }
+
+// long long findSecondSmallestinArray(long long arr[],long long i,long long j){
+//     priority_queue<int,vector<int>,greater<int>> minHeap;
+//     for(int k = i;k<j+1;k++){
+//         minHeap.push(arr[k]);
+//     }
+    
+//     minHeap.pop();
+//     return minHeap.top();
+// }
+
+
+long long pairWithMaxSum(long long arr[], long long N) {
+    // // Brute Force - All Subarrays and MinHeap - TC : O(N^3), SC : O(N)
+    // if(N<2) return 0;
+    // long long score = INT_MIN;
+    
+    // for(long long i=0;i<N;i++){
+    //     for(long long j=i+1;j<N;j++){
+    //         long long smallest = findSmallestinArray(arr,i,j);
+    //         long long secondSmallest = findSecondSmallestinArray(arr,i,j);
+            
+    //         score = max(score,smallest + secondSmallest);
+    //     }
+    // }
+    
+    // return score;
+    
+    // Optimal Approach - Here, it is basically asking for the max sum of two consecutive elements 
+    long long score = INT_MIN;
+    for(long long int i=0;i<N-1;i++){
+        long long currentSum=arr[i]+arr[i+1];  
+        score=max(score,currentSum); 
+    }
+
+    return score;
+}
+
+// Q41. Longest Subarray with sum K (GFG)
+int lenOfLongSubarr(int A[],  int N, int K) { 
+    if(N<1) return 0;
+    // // Brute Force - Create all Subarrays and check length - O(N^2), SC : O(1)
+    // int length = 0;
+    // for(int i=0;i<N;i++){
+    //     int sum = 0;
+    //     for(int j=i;j<N;j++){
+    //         sum += A[j];
+            
+    //         if(sum==K){
+    //             length = max(length, j - i + 1);
+    //         }
+    //     }
+    // }
+    
+    // return length==INT_MIN ? 0:length;
+    
+    // Optimal Approach - Using Hash Map + Prefix Sum - TC : O(N), SC : O(N)
+    unordered_map<long long,int> prefixMp;
+    long long sum = 0;
+    int length = 0;
+    
+    for(int i=0;i<N;i++){
+        sum += A[i];
+        
+        if(sum==K){
+            length = max(length,i+1);
+        }
+        
+        long long rem = sum-K;
+        if(prefixMp.find(rem)!=prefixMp.end()){
+            int len = i - prefixMp[rem]; // V. IMP CONDITION, Yaha mein galti karta hoon
+            length = max(length,len);
+        }
+        
+        // Only update map from the left most value, as we have to maximise the length.Matlab agar sum previously exist karta hai, so it is already in place to. maximise the subarray and needs no updation
+        if(prefixMp.find(sum) == prefixMp.end()){// V.IMP CONDITION, Yaha mein galti karta hoon
+            prefixMp[sum] = i;
+        }
+    }
+    
+    return length;
+} 
+
