@@ -414,7 +414,79 @@ void nextPermutation(vector<int>& nums) {
 }
 
 // Q11. Count Inversions in an Array (GFG)
+class Solution{
+  public:
+    long long count = 0;
+    void merge(long long arr[], long long low, long long mid, long long high) {
+        long long n1 = mid-low+1;
+        long long n2 = high-mid;
+        
+        long long arr1[n1];
+        for(long long i=0; i<n1; i++){
+            arr1[i] = arr[low+i];
+        }
+        
+        long long arr2[n2];
+        for(long long i=0; i<n2; i++){
+            arr2[i] = arr[mid+i+1];
+        }
+        
+        long long i=0;
+        long long j=0;
+        long long k=low;
+        
+        while(i<n1 && j<n2) {
+            if(arr1[i]<=arr2[j]) arr[k++] = arr1[i++];
+            else {
+                count += n1 - i; // V.V. IMP Condition, yaha mein galti karta hoon
+                arr[k++] = arr2[j++];
+            }
+        }
+        
+        while(i<n1){
+            arr[k++] = arr1[i++];
+        }
+        while(j<n2){
+            arr[k++] = arr2[j++];
+        } 
+    }
 
+    void mergeSort(long long arr[], long long low, long long high) {
+        if(low<high) {
+            long long mid = ((high-low)/2) + low;
+            mergeSort(arr, low, mid);
+            mergeSort(arr, mid+1, high);
+            merge(arr, low, mid, high);
+        }
+    }
+
+    long long int inversionCount(long long arr[], int n) {
+        // // Brute Force - TC-> O(n^2) SC-O(1)
+        // if(n<=1) return 0;
+        
+        // int count = 0;
+        
+        // for(int i=0;i<=n-2;i++){
+        //     for(int j=i+1;j<=n-1;j++){
+        //         if(arr[i]>arr[j]){
+        //             count++;
+        //         }
+        //     }
+        // }
+        
+        // return count;
+        
+        // Optimal Approach - Use Merge Sort with the variation that if 
+        // while merging, left > right, then all elements ahead of 
+        // left in that array, can possibly make a pair with the element on the right. Here, TELL YAAD SE THAT WE ARE ALTERING THE MAIN ARRAY
+        // IN CASE THE INTERVIEWER ASKS FOR THE ORIGINAL ARRAY, THEN WE NEED TO MAKE A COPY OF THE ARRAY AND THEN PASS IT TO THE FUNCTION
+        // TC->O(NlogN)
+        count = 0;
+        mergeSort(arr, 0, n-1);
+        return count;
+        
+    }
+};
 
 // Q12. Best Time to Buy and Sell Stock (LC-121)
 int maxProfit(vector<int>& prices) {
@@ -1966,3 +2038,166 @@ int lenOfLongSubarr(int A[],  int N, int K) {
     return length;
 } 
 
+// Q42. Reverse Pairs (LC-493) && (CodeNinja)
+// LC-493 Version
+void merge(vector<int> &arr, long long low, long long mid, long long high,int &count) {
+    // Main Function, V.V.V.V. IMP CONDTION
+    int right = mid + 1;
+    for(int i=low;i<=mid;i++){
+        while(right<=high && (arr[i] > 2*(long long)arr[right])){
+            right++;
+        }
+        count += (right - (mid+1));
+    }
+
+    vector<int> temp; // temporary array
+    int left = low;      // starting index of left half of arr
+    right = mid + 1;   // starting index of right half of arr
+
+    //storing elements in the temporary array in a sorted manner//
+
+    while (left <= mid && right <= high) {
+        if (arr[left] <= arr[right]) {
+            temp.push_back(arr[left]);
+            left++;
+        }
+        else {
+            temp.push_back(arr[right]);
+            right++;
+        }
+    }
+
+    // if elements on the left half are still left //
+
+    while (left <= mid) {
+        temp.push_back(arr[left]);
+        left++;
+    }
+
+    //  if elements on the right half are still left //
+    while (right <= high) {
+        temp.push_back(arr[right]);
+        right++;
+    }
+
+    // transfering all elements from temporary to arr //
+    for (int i = low; i <= high; i++) {
+        arr[i] = temp[i - low];
+    }
+}
+
+void mergeSort(vector<int> &arr, long long low, long long high,int &count) {
+    if (low >= high) return;
+    int mid = (low + high) / 2 ;
+    mergeSort(arr, low, mid,count);  // left half
+    mergeSort(arr, mid + 1, high,count); // right half
+    merge(arr, low, mid, high,count);  // merging sorted halves
+}
+
+int reversePairs(vector<int>& nums) {
+    int n = nums.size();
+    if(n<2) return 0;
+
+    // // Brute Force - Two Nested Loops - TC : O(N^2), SC : O(1) - TLE
+    // long long count = 0;
+    // for(int i=0; i<n-1; i++){
+    //     for(int j=i+1; j<n; j++){
+    //         if(nums[i] > 2*(long long)nums[j]){
+    //             count++;
+    //         }
+    //     }
+    // }
+    // return count;
+
+    // Optimal Approach - Different version of Count Inversions. Needs a speical function to count all pairs instead of in place, baaki merge sort as it is
+    //Here, TELL YAAD SE THAT WE ARE ALTERING THE MAIN ARRAY
+    // IN CASE THE INTERVIEWER ASKS FOR THE ORIGINAL ARRAY, THEN WE NEED TO MAKE A COPY OF THE ARRAY AND THEN PASS IT TO THE FUNCTION
+    // TC->O(NlogN)
+    int count = 0;
+    mergeSort(nums, 0, n-1,count);
+    return count;
+}
+
+// CodeNinja Version
+void merge(vector<int> &arr, long long low, long long mid, long long high) {
+    vector<int> temp; // temporary array
+    int left = low;      // starting index of left half of arr
+    int right = mid + 1;   // starting index of right half of arr
+
+    //storing elements in the temporary array in a sorted manner//
+
+    while (left <= mid && right <= high) {
+        if (arr[left] <= arr[right]) {
+            temp.push_back(arr[left]);
+            left++;
+        }
+        else {
+            temp.push_back(arr[right]);
+            right++;
+        }
+    }
+
+    // if elements on the left half are still left //
+
+    while (left <= mid) {
+        temp.push_back(arr[left]);
+        left++;
+    }
+
+    //  if elements on the right half are still left //
+    while (right <= high) {
+        temp.push_back(arr[right]);
+        right++;
+    }
+
+    // transfering all elements from temporary to arr //
+    for (int i = low; i <= high; i++) {
+        arr[i] = temp[i - low];
+    }
+}
+
+int countPairs(vector<int> arr, long long low,long long mid ,long long high){
+    int right = mid + 1;
+    int count = 0;
+    for(int i=low;i<=mid;i++){
+        while(right<=high && (arr[i] > 2*(long long)arr[right])){
+            right++;
+        }
+        count += (right - (mid+1));
+    }
+    return count;
+}
+
+int mergeSort(vector<int> &arr, long long low, long long high) {
+    int count = 0;
+    if (low >= high) return 0;
+    int mid = (low + high) / 2 ;
+    count += mergeSort(arr, low, mid);  // left half
+    count += mergeSort(arr, mid + 1, high); // right half
+    count += countPairs(arr,low,mid,high);
+    merge(arr, low, mid, high);  // merging sorted halves
+
+    return count;
+}
+
+int team(vector <int> & skill, int n){
+    // int n = nums.size();
+    if(n<2) return 0;
+
+    // // Brute Force - Two Nested Loops - TC : O(N^2), SC : O(1) - TLE
+    // long long count = 0;
+    // for(int i=0; i<n-1; i++){
+    //     for(int j=i+1; j<n; j++){
+    //         if(nums[i] > 2*(long long)nums[j]){
+    //             count++;
+    //         }
+    //     }
+    // }
+    // return count;
+
+    // Optimal Approach - Different version of Count Inversions. Needs a speical function to count all pairs instead of in place, baaki merge sort as it is
+    //Here, TELL YAAD SE THAT WE ARE ALTERING THE MAIN ARRAY
+    // IN CASE THE INTERVIEWER ASKS FOR THE ORIGINAL ARRAY, THEN WE NEED TO MAKE A COPY OF THE ARRAY AND THEN PASS IT TO THE FUNCTION
+    // TC->O(NlogN)
+    return mergeSort(skill, 0, n-1);
+}
