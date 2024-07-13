@@ -2201,3 +2201,113 @@ int team(vector <int> & skill, int n){
     // TC->O(NlogN)
     return mergeSort(skill, 0, n-1);
 }
+
+// Q43. Merge two Sorted Arrays in Constant Space (GFG)
+void merge(long long arr1[], long long arr2[], int n, int m) { 
+    if(n<1 || m<1) return;
+    // // Brute Force - Using Extra Space - TC : O(N+M), SC : O(N+M)
+    
+    // long long arr3[n+m];
+    
+    // int i = 0;
+    // int j = 0;
+    // int k = 0;
+    
+    // while(i<n && j<m){
+    //     if(arr1[i]<arr2[j]){
+    //         arr3[k++] = arr1[i++];
+    //     }
+    //     else{
+    //         arr3[k++] = arr2[j++];
+    //     }
+    // }
+    
+    // while(i<n){
+    //     arr3[k++] = arr1[i++];
+    // }
+    
+    // while(j<m){
+    //     arr3[k++] = arr2[j++];
+    // }
+    
+    
+    // for(int l = 0;l<n+m;l++){
+    //     if(l<n){
+    //         arr1[l] = arr3[l];
+    //     }
+    //     else{
+    //         arr2[l-n] = arr3[l];
+    //     }
+    // }
+    
+    // return;
+    
+    // // Optimal Approach 1 - Two Pointer and Simple Sort : TC : O(Min(N,M) + NlogN + MlogM) , SC : O(1)
+    
+    // Step1. Compare whether all elements are in their correct position
+    int i = n-1;
+    int j = 0;
+    
+    while(i>=0 && j<m){
+        if(arr1[i]>=arr2[j]){
+            swap(arr1[i--],arr2[j++]); // IMP CONDITION, YAHA MEIN GALTI KARTA HOON
+        }
+        else{
+            break; // Now, since we found one correct pair, we can be sure iske baad everything will be in the correct order
+        }
+    }
+    
+    // Step2. Now. all elements are in their correct array. Sort both the arrays to fetch final ans
+    sort(arr1,arr1+n);
+    sort(arr2,arr2+m);
+    
+    // return;
+    
+    // // Optimal Approach 2 - Gap Method : TC : O(log2(N+M) * O(N+M)), SC : O(1)
+    // // We keep on reducing gap till it does't become stuck in a recusrive call where it will give 1 each time.
+    // // starting point is taking gap = greatest_integer(n+M);
+    // int len = n+m;
+    // int gap = (len/2) + (len%2); // This emulates greatest integer function
+    
+    // while(gap>0){
+    //     int left = 0;
+    //     int right = left + gap;
+        
+    //     while(right<len){
+    //         // Case 1 : left pointer is in arr1 and right is in arr2
+    //         if(left<n && right>=n){
+    //             if(arr1[left] > arr2[right - n]){
+    //                 swap(arr1[left],arr2[right-n]);
+    //             }
+    //         }
+    //         // Case 2 : both left and right in arr2
+    //         else if(left>=n){
+    //             if(arr1[left-n] > arr2[right - n]){
+    //                 swap(arr1[left-n],arr2[right-n]);
+    //             }
+    //         }
+    //         // Case 3: both left and right in arr1
+    //         else{
+    //             if(arr1[left] > arr2[right]){
+    //                 swap(arr1[left],arr2[right]);
+    //             }
+    //         }
+            
+    //         left++;
+    //         right++;
+    //     }
+        
+    //     if(gap==1){
+    //         break;
+    //     }
+        
+    //     if(gap%2==0){
+    //         gap = gap/2;
+    //     }
+    //     else{
+    //         gap = (gap/2) + 1;
+    //     }
+    // }
+    
+    // return;
+} 
