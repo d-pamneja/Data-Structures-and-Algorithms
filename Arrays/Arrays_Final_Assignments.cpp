@@ -2311,3 +2311,228 @@ void merge(long long arr1[], long long arr2[], int n, int m) {
     
     // return;
 } 
+
+// Q44. Anagram (GFG)
+bool isAnagram(string a, string b){
+    if(a.length()!=b.length()){
+        return false;
+    }
+    // // Brute Force Approach - Sorting and Matching - TC : O(NlogN + MlogM), SC : O(1)
+    // sort(a.begin(),a.end());
+    // sort(b.begin(),b.end());
+    
+    // return a==b;
+    
+    // Better Apporach - Using Map
+    unordered_map<char,int> mp; // Element of string 1, count of element of string 1
+    for(char ch:a){
+        mp[ch]++;
+    }
+    
+    for(char ch:b){
+        if(mp.find(ch)!=mp.end()){
+            if(mp[ch]>=1){
+                mp[ch]--;
+            }
+            else{
+                return false;
+            }
+        }
+        else{
+            return false;
+        }
+    }
+    
+    return true;
+    
+}
+
+// Q45. Replace Spaces - (CodeNinja)
+string replaceSpaces(string &str){
+	// Brute Force - Linear search and check
+	if(str.length()<1) return str;
+
+	string output = "";
+	for(int i=0;i<str.length();i++){
+		if(str[i]==' '){
+			output += "@40";
+		}
+		else{
+			output += str[i];
+		}
+	}
+
+	return output;
+}
+
+// Q46. Anagram PalinDrome - (GFG)
+int isPossible (string S){
+    // // Brute Force - Using Map - TC : O(N), SC : O(Unique Characters)
+    // // Here, for a valid palindrome, only one element can appear a singular time, else all have to appear twice
+    
+    // if(S.length()<1){
+    //     return 0;
+    // }
+    
+    // unordered_map<char,int> mp; // element, freq of element
+    
+    // for(char ch:S){
+    //     mp[ch]++;
+    // }
+    
+    // bool foundOdd = 0;
+    // for(char ch:S){
+    //     if(mp[ch]&1){
+    //         if(foundOdd){
+    //             return false;
+    //         }
+    //         else{
+    //             foundOdd = true;
+    //         }
+    //     }
+    // }
+    
+    // return true;
+    
+    
+    // Optimal Approach - Using Array - TC : O(N), SC : O(1) - Although SC is just an array of 26 elements
+    int charCount[26] = {};
+
+    for (char c : S) {
+        if (c >= 'a' && c <= 'z') {
+            charCount[c - 'a']++;
+        }
+    }
+    
+    bool foundOdd = 0;
+    for(int i : charCount){
+        if(i&1){
+            if(foundOdd){
+                return false;
+            }
+            else{
+                foundOdd = true;
+            }
+        }
+    }
+    
+    return true;
+
+}
+
+// Q47. One Away (Codeninja)
+bool check1(string a,string b){
+    int cnt=0;
+    for (int i=0;i<a.size();i++)
+    {
+        if (i - cnt >= 0 && a[i]!=b[i-cnt]){ // IMP CONDITION
+            cnt++;
+        }
+        if (cnt>1) return false;
+    }
+    return true;
+}
+bool check2(string a,string b){
+    int cnt=0;
+    for (int i=0;i<a.size();i++)
+    {
+        if (a[i]!=b[i]) cnt++;
+        if (cnt>1) return false;
+    }
+    return true;
+}
+
+bool isOneAway(string a, string b) {
+    int alen = a.length();
+    int blen = b.length();
+
+    if (abs(alen - blen) > 1) {
+        return false;
+    }
+
+    // IMP CONDITION
+    if (a.size()>b.size()) return check1(a,b);
+    else if (b.size()>a.size()) return check1(b,a);
+    return check2(a,b);
+}
+
+// Q48. String Compression (LC-443)
+int compress(vector<char>& chars) {
+    int n = chars.size();
+    if(n<1) return 0;
+
+    // // Brute Force - Using String and Array - TC : O(N), SC : O(N)
+    // string str = "";
+    // int currCount = 0;
+    // for(int i=0;i<n;i++){
+    //     currCount++;
+    //     if((i+1)>=n || chars[i]!=chars[i+1]){
+    //         if(currCount==1){
+    //             str = str +  "" + chars[i];
+    //         }
+    //         else{
+    //             str = str +  "" + chars[i] + to_string(currCount);
+    //         }
+            
+    //         currCount = 0;
+    //     }
+    // }
+
+    // vector<char> ans;
+    // for(auto ch:str){
+    //     ans.push_back(ch);
+    // }
+
+    // chars = ans;
+    // return ans.size();
+
+    // Optimal Approach - Using Two Pointer - TC : O(N), SC : O(1)
+
+    int ans = 0; // To store position of curr element
+    for(int i=0;i<n;){
+        int currCount = 0;
+        char currChar = chars[i];
+
+        while(i<n && chars[i]==currChar){
+            currCount++;
+            i++;
+        }
+        chars[ans++] = currChar;
+
+        if(currCount>1){
+            for(auto ch:to_string(currCount)){
+                chars[ans++] = ch;
+            }
+        }
+    }
+
+    return ans;
+}
+
+// Q49. String Rotation of each other (GFG)
+bool areRotations(string s1,string s2){
+    int n = s1.length();
+    int m = s2.length();
+    
+    if(n!=m){
+        return false;
+    }
+    
+    // // Brute Force - Check for each rotation of s1 if equal to s2 - TC - O(N), SC - O(1)
+    // while(n){
+    //     rotateOnce(s1);
+    //     if(s1==s2){
+    //         return true;
+    //     }
+    //     n--;
+    // }
+    
+    // return false;
+    
+    // Optimal Apporach - Substring method. If it is a rotation, s2 will always be a part of the concatenated string of s1 + s1
+    // TC - O(N), SC - O(N)
+    
+    string s = s1 + s1;
+    return s.find(s2)!=string::npos;
+    
+}
