@@ -132,6 +132,81 @@ int findKthLargest(vector<int>& nums, int k) {
 }
 
 // Q4. Intersection of Two Arrays (LC-349)
+bool isInArray(vector<int>& arr, int x){
+    for(int i=0;i<arr.size();i++){
+        if(arr[i]==x){
+            return true;
+        }
+    }
+    return false;
+}
+
+vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
+    int n = nums1.size();
+    int m = nums2.size();
+
+    if(n<1 || m<1){
+        return {};
+    }
+
+    // Brute Force 1 - Sort and then check for intersection - TC : O(NLogN + MLogM), SC : O(N)
+    // set<int> st;
+    // vector<int> ans;
+
+    // sort(nums1.begin(),nums1.end());
+    // sort(nums2.begin(),nums2.end());
+
+    // int i = 0;
+    // int j = 0;
+
+    // while(i<nums1.size() && j < nums2.size()){
+    //     if(nums1[i] == nums2[j]){
+    //         st.insert(nums1[i]);
+    //         i++;
+    //         j++;
+    //     }
+    //     else if(nums1[i]<nums2[j]){
+    //         i++;
+    //     }
+    //     else{
+    //         j++;
+    //     }
+    // }
+
+    // // Better Approach- Check all elements and put in set - TC : O(N*M), SC : O(N)
+    // unordered_set<int> st;
+    // if(n>=m){
+    //     for(int i=0;i<m;i++){
+    //         if(isInArray(nums1,nums2[i])){
+    //             st.insert(nums2[i]);
+    //         }
+    //     }
+    // }
+    // else{
+    //     for(int i=0;i<n;i++){
+    //         if(isInArray(nums2,nums1[i])){
+    //             st.insert(nums1[i]);
+    //         }
+    //     }
+    // }
+
+    // Optimal Approach  - Using Hashing - TC : O(N+M), SC : O(N)
+    unordered_set<int> st;
+    unordered_map<int, int> mp; // element, index of element
+    for(int i=0;i<n;i++){
+        mp.insert({nums1[i],i});
+    }
+
+    for(int i=0;i<m;i++){
+        if(mp.find(nums2[i])!=mp.end()){
+            st.insert(nums2[i]);
+            mp.erase(nums2[i]);
+        }
+    }
+
+    vector<int> ans(st.begin(), st.end());
+    return ans;
+}
 vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
     if(nums1.size()==0 || nums2.size()==0){
         return {};

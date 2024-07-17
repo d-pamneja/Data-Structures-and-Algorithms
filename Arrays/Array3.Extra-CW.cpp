@@ -199,6 +199,22 @@ vector<int> rearrangeArray(vector<int>& nums) {
 
 // Q8. Maximum Subarray Sum (Kadane's Algorithm) - V.V.V.V.VIMP (GFG)
 long long maxSubarraySum(int arr[], int n){
+    // // Brute Force - All subarrays and sum check - TC : O(N^2), SC : O(1)
+    // long long ans = INT_MIN;
+    
+    // for(int i=0;i<n;i++){
+    //     long long currSum = arr[i];
+    //     ans = max(ans,currSum);
+        
+    //     for(int j=i+1;j<n;j++){
+    //         currSum += arr[j];
+    //         ans = max(ans,currSum);
+    //     }
+    // }
+    
+    // return ans;
+
+    // Optimal Approach - Kadane's Algo - TC : O(N), SC : O(1)
     long long maxi = LONG_MIN; // Stores the maximum sum overall
     long long curr_maxi = 0; // Stores the current maximum
     
