@@ -56,3 +56,20 @@ int main(){
     v1+v2;
     v1.display();
 }
+
+// Notes
+// Polymorphism is a feature of OOP that allows objects of different classes to be treated as objects of a common superclass. This allows us to perform a single action in different ways.
+// If put simiply, Polymorphism is the ability of a single function to operate on different types of data, effecitvely giving it many forms. 
+// "poly" means many and "morph" means forms. 
+
+// 1. Compile Time Polymorphism - Static Polymorphism
+// Here, the function to be invoked is decided at the compile time. This is also called as Early Binding or Static Binding.
+// Compile time polymorphism is achieved using function overloading and operator overloading.
+// Function Overloading: When two or more functions in the same scope have the same name but different parameters, it is called function overloading.
+// We can do function overloading by changing the number of arguments, changing the data type of arguments, or changing the sequence of arguments.
+// Note that just by changing the return type of the function, we cannot do function overloading.
+
+// Operator Overloading: Operator overloading is a type of polymorphism in which an operator is overloaded to give user-defined meaning to it.
+// Operator overloading is a compile-time polymorphism. It is a type of static polymorphism. It is also known as Operator Ad-hoc polymorphism.
+// We can overload operators by defining a function that will be invoked when the operator is used. We can see the example above.
+

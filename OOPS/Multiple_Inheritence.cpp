@@ -43,8 +43,8 @@ int main(){
     // Diamond Probelm : Now, we can resolve ambigious inheritence via two methdos -> Scope Resolution (bekar method) and virtual
     
     // // Scope Resolution
-    // p1.Teacher::exists(); // Matlab ki humne p1 ko specially kaha ki teacher wall awalk use kar le
-    // p1.Researcher::exists(); // Matlab ki humne p1 ko specially kaha ki teacher wall awalk use kar le
+    // p1.Teacher::exists(); // Matlab ki humne p1 ko specially kaha ki teacher walla walk use kar le
+    // p1.Researcher::exists(); // Matlab ki humne p1 ko specially kaha ki teacher walla walk use kar le
 
     // // Virtual (Dono ke common elements ko ek hi kar de voh bhi RUNTIME pe) - For this, we will have to mention while inheriting the class itself
     // p1.exists();
